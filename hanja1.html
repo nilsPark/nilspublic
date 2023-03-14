@@ -1,0 +1,141 @@
+<html>
+<style>
+th, td {
+	text-align: center;
+}
+</style>
+<body style="text-align: center">
+	<table style="border:0px;margin-left:auto;margin-right:auto;">
+		<tr>
+			<td style="vertical-align: middle; width: 20rem;">
+				<span id="notPassCount" style="font-size: 5rem"></span>
+			</td>
+			<td style="text-align: center; " rowspan="2">
+				<span id="display" style="font-family: ±Ã¼­;font-size: 50rem;font-weight: bold;"></span>
+			</td>
+			<td style="vertical-align: middle; width: 20rem;">
+				<span id="passCount" style="font-size: 5rem"></span><br/>
+			</td>
+		</tr>
+		<tr>
+			<td id="skipCell" style="vertical-align: middle; text-align: center;">
+				<span style="font-size: 4rem">SKIP</span>
+			</td>
+			<td id="passCell" style="vertical-align: middle; text-align: center;">
+				<span style="font-size: 4rem">PASS</span>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			</td>
+			<td style="text-align: center">
+				<span id="displayMeaning" style="font-family: ±Ã¼­;font-size: 100px;font-weight: bold;"></span>
+			</td>
+			<td>
+			</td>
+		</tr>
+	</table>
+</body>
+<script>
+
+const hanjaSet = ["Ê«", "Áý °¡", "Ë°", "°­ °­", "Ì³", "°³ °ß", "Îè", "ÇÐ±³ ±³", "Îú", "¾ÆÈ© ±¸", "Ï¢", "ÀÔ ±¸", "ÑÑ", "¼º ±è/±Ý ±Ý", "Ñû", "³²ÀÚ ³²", "Ò³", "¿©ÀÚ ³à", "Ò³", "¿©ÀÚ ³à", "ÓÞ", "Å« ´ë", "Ôç", "Äá µÎ", "Õô", "Èû ·Â", "Ø¡", "¼³ ¸³", "Ø©", "¸» ¸¶", "Ø©", "¸» ¸¶", "Øü", "¾ó±¼ ¸é", "Ù½", "¾î¸Ó´Ï ¸ð", "ÙÊ", "³ª¹« ¸ñ", "ÙÍ", "´« ¸ñ", "Ú¦", "¹® ¹®", "Ú·", "½Ò ¹Ì", "ÛÜ", "Èò ¹é", "ÛÝ", "ÀÏ¹é ¹é", "Ý«", "¾Æ¹öÁö ºÎ", "Þ¬", "ÄÚ ºñ", "ÞÌ", "³Ë »ç", "ß£", "¸þ »ê", "ß²", "¼® »ï", "ß¾", "À§ »ó", "ßæ", "³¯ »ý", "àª", "Àú³á ¼®", "à´", "µ¹ ¼®", "á³", "ÀÛÀ» ¼Ò", "â¢", "¼Õ ¼ö", "â©", "¹° ¼ö", "ãó", "¸ö ½Å", "ãý", "¸¶À½ ½É", "ä¨", "¿­ ½Ê", "åÏ", "¾ç ¾ç", "åà", "¹°°í±â ¾î", "çé", "´Ù¼¸ ¿À", "èÝ", "ÀÓ±Ý ¿Õ", "éÚ", "¼Ò ¿ì", "éë", "ºñ ¿ì", "êÅ", "´Þ ¿ù", "ë»", "¿©¼¸ À°", "ëý", "¿Ê ÀÇ", "ì£", "µÎ ÀÌ", "ì¼", "±Í ÀÌ", "ìÑ", "»ç¶÷ ÀÎ", "ìÑ", "»ç¶÷ ÀÎ", "ìé", "ÇÏ³ª ÀÏ", "ìí", "ÇØ ÀÏ", "í­", "³²ÀÚ ÀÚ", "í­", "¾Æµé ÀÚ", "îå", "ºÓÀ» Àû", "ï£", "¹ç Àü", "ï£", "¹ç Àü", "ð©", "¾Æ¿ì Á¦", "ðè", "»õ Á¶", "ðë", "¹ß Á·", "ðë", "¹ß Á·", "ñé", "°¡¿îµ¥ Áß", "ò¢", "¶¥ Áö", "ó³", "¼ö·¹ Â÷", "ô¶", "ÀÏÃµ Ãµ", "ô¸", "ÇÏ´Ã Ãµ", "ô¹", "³» Ãµ", "ôì", "Çª¸¦ Ã»", "õ®", "Ç® ÃÊ", "õ»", "¸¶µð ÃÌ", "öÒ", "ÀÏ°ö Ä¥", "÷Ï", "Èë Åä", "ø¢", "¿©´ü ÆÈ", "ù¦", "¹Ù¶÷ Ç³", "ù»", "¾Æ·¡ ÇÏ", "úü", "Çü Çü", "ûý", "ºÒ È­", "ü£", "²É È­", "ýÙ", "°ËÀ» Èæ"];
+
+const totalCount = hanjaSet.length / 2;
+
+let _hanja = [];
+let _meaning = [];
+let prevIndex;
+let index;
+
+function displayNext(pass) {
+	if (pass) {
+		_hanja.splice(index, 1);
+		_meaning.splice(index, 1);
+	}
+
+	if(_hanja.length == 0) {
+		alert("³¡³µ½À´Ï´Ù. Ã³À½ºÎÅÍ ´Ù½ÃÇÕ´Ï´Ù.");
+		document.location.reload();
+	}
+
+	index = getNextIndex();
+
+	document.querySelector("#display").innerHTML = _hanja[index];
+	document.querySelector("#displayMeaning").style.display = 'none';
+
+	document.querySelector("#displayMeaning").innerHTML = _meaning[index];
+
+	document.querySelector("#notPassCount").innerHTML = _hanja.length;
+	let passCount = totalCount - _hanja.length;
+	document.querySelector("#passCount").innerHTML = passCount;
+}
+
+function getNextIndex() {
+	while(true) {
+		const index = Math.floor(Math.random() * 100) % _hanja.length;
+		if(prevIndex != index || _hanja.length == 1) {
+			prevIndex = index;
+			return index;
+		}
+	}
+}
+
+function showMeaning() {
+	document.querySelector("#displayMeaning").style.display = 'block';
+}
+
+function keyDown(event) {
+	if (event.keyCode === 32) {
+	}
+	if (event.keyCode === 13) {
+		showMeaning()
+	}
+}
+
+function keyUp(event) {
+	if (event.keyCode === 32) {
+		displayNext(true);
+	}
+	if (event.keyCode === 13) {
+		displayNext(false);
+	}
+}
+
+function mouseOver(event) {
+	let target = event.target;
+	if(target.tagName != "TD") {
+		target = target.parentElement;
+	}
+	target.style.background = '#999999';
+}
+
+function mouseOut(event) {
+	let target = event.target;
+	if(target.tagName != "TD") {
+		target = target.parentElement;
+	}
+	event.target.style.background = '';
+}
+
+document.addEventListener("keydown", keyDown, false);
+document.addEventListener("keyup", keyUp, false);
+document.querySelector("#passCell").addEventListener("click", (event) => { displayNext(true); }, false);
+document.querySelector("#skipCell").addEventListener("mousedown", showMeaning, false);
+document.querySelector("#skipCell").addEventListener("mouseup",  (event) => { displayNext(false); }, false);
+document.querySelector("#passCell").addEventListener("mouseover", mouseOver, false);
+document.querySelector("#passCell").addEventListener("mouseout", mouseOut, false);
+document.querySelector("#skipCell").addEventListener("mouseover", mouseOver, false);
+document.querySelector("#skipCell").addEventListener("mouseout", mouseOut, false);
+
+window.onload = function() {
+
+	for (let i = 0; i < totalCount; i++) {
+		_hanja[i] = hanjaSet[i * 2];
+		_meaning[i] = hanjaSet[i * 2 + 1];
+	}
+	displayNext(false);
+}
+
+</script>
+</html>
+
